@@ -3,6 +3,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { BrowserRouter } from "react-router";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 // store와 비슷한 역할, 쉽게 예시로
 const queryClient = new QueryClient();
@@ -11,6 +12,7 @@ createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     {/* props로 queryClient를 전달 */}
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools />
       <App />
     </QueryClientProvider>
   </BrowserRouter>,
