@@ -1,9 +1,11 @@
 import TodoEditor from "@/components/todo-list/todo-editor";
 import TodoItem from "@/components/todo-list/todo-item";
-import { useTodosData } from "@/hooks/quries/use-todos.data";
+import { useTodosData } from "@/hooks/quries/use-todos-data";
 
 export default function TodoListPage() {
   // TanstackQuery 추가
+  // useTodosData 커스텀 훅을 통해 서버 상태를 가져온다
+  // data를 todos로 별칭 지정, isLoading과 error도 구조분해로 가져온다
   const { data: todos, isLoading, error } = useTodosData();
 
   if (error) {
