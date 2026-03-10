@@ -6,7 +6,7 @@ export default function TodoDetailPage() {
 
   const id = params.id;
 
-  const { data, isLoading, error } = useTodoDataById(Number(id));
+  const { data, isLoading, error } = useTodoDataById(String(id));
 
   if (isLoading) {
     return <div>로딩중 입니다...</div>;

@@ -1,19 +1,45 @@
 {
   "todos": [
     {
-      "id": 1,
+      "id": "1",
       "content": "Todo 1",
       "isDone": true
     },
     {
-      "id": 2,
+      "id": "2",
       "content": "Todo 2",
       "isDone": true
     },
     {
-      "id": 3,
+      "id": "3",
       "content": "Todo 3",
       "isDone": false
+    },
+    {
+      "id": "eace",
+      "content": "",
+      "isDone": false
+    },
+    {
+      "id": "1f76",
+      "content": "1234",
+      "isDone": false
+    },
+    {
+      "id": "728b",
+      "content": "1234567",
+      "isDone": false
+    },
+    {
+      "id": "0d67",
+      "content": "로딩확인",
+      "isDone": false
+    },
+    {
+      "id": "9002",
+      "content": "345",
+      "isDone": false
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
