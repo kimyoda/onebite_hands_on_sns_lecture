@@ -21,7 +21,7 @@ export default function TodoEditor() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     // IME (한글 입력 등) 조합 중 Enter 처리 방지
     if (e.key === "Enter" && !e.nativeEvent.isComposing) {
-      mutate(content);
+      // mutate(content);
       handleAddClick();
     }
   };
