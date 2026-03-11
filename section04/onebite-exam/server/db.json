@@ -39,6 +39,11 @@
       "id": "9002",
       "content": "345",
       "isDone": false
+    },
+    {
+      "id": "8b57",
+      "content": "견과류먹기",
+      "isDone": false
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
