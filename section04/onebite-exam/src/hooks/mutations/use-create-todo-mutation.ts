@@ -13,7 +13,7 @@ export function useCreateTodoMutation() {
     onSettled: () => {},
     // 요청 성공
     onSuccess: (newTodo) => {
-      // 데이터 무효화
+      // setQueryData 메서드 활용
       queryClient.setQueryData<Todo[]>(QUERY_KEYS.todo.list, (prevTodos) => {
         if (!prevTodos) {
           return [newTodo];
