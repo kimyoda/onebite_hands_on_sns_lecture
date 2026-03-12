@@ -14,12 +14,19 @@ export function useCreateTodoMutation() {
     // 요청 성공
     onSuccess: (newTodo) => {
       // setQueryData 메서드 활용
-      queryClient.setQueryData<Todo[]>(QUERY_KEYS.todo.list, (prevTodos) => {
-        if (!prevTodos) {
-          return [newTodo];
-        }
-        return [...prevTodos, newTodo];
-      });
+      queryClient.setQueryData<Todo>(
+        QUERY_KEYS.todo.detail(newTodo.id),
+        newTodo,
+      );
+      queryClient.setQueryData<string[]>(
+        QUERY_KEYS.todo.list,
+        (prevTodoIds) => {
+          if (!prevTodoIds) {
+            return [newTodo.id];
+          }
+          return [...prevTodoIds, newTodo.id];
+        },
+      );
     },
     // 요청 실패
     onError: (error) => {

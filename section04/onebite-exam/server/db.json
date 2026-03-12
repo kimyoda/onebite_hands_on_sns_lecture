@@ -14,11 +14,6 @@
       "id": "d8d7",
       "content": "234",
       "isDone": false
-    },
-    {
-      "id": "f303",
-      "content": "456",
-      "isDone": false
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
