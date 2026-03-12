@@ -3,12 +3,12 @@
     {
       "id": "1",
       "content": "Todo 1",
-      "isDone": true
+      "isDone": false
     },
     {
       "id": "419d",
       "content": "123",
-      "isDone": true
+      "isDone": false
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
