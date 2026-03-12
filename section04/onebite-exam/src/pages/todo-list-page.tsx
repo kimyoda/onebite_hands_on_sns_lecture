@@ -6,7 +6,7 @@ export default function TodoListPage() {
   // TanstackQuery 추가
   // useTodosData 커스텀 훅을 통해 서버 상태를 가져온다
   // data를 todos로 별칭 지정, isLoading과 error도 구조분해로 가져온다
-  const { data: todos, isLoading, error } = useTodosData();
+  const { data: todosIds, isLoading, error } = useTodosData();
 
   if (error) {
     return <div>오류가 발생했다.</div>;
@@ -20,8 +20,8 @@ export default function TodoListPage() {
     <div className="flex flex-col gap-5 p-5">
       <h1 className="text-2xl font-bold">TodoList</h1>
       <TodoEditor />
-      {todos?.map((todo) => (
-        <TodoItem key={todo.id} {...todo} />
+      {todosIds?.map((id) => (
+        <TodoItem key={id} id={id} />
       ))}
     </div>
   );

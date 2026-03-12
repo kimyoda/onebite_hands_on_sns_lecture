@@ -12,7 +12,7 @@ export function useTodosData() {
     queryFn: async () => {
       // 캐시 정규화 작업
       const todos = await fetchTodos();
-
+      // forEach 메서드를 활용해 setQuery메서드를 통해 개별로 저장될것이다
       todos.forEach((todo) => {
         queryClient.setQueryData<Todo>(QUERY_KEYS.todo.detail(todo.id), todo);
       });
