@@ -10,6 +10,7 @@ export default function Controller() {
   //   const increase = useCountStore((store) => store.increase);
   //   const decrease = useCountStore((store) => store.decrease);
   //   const { increase, decrease } = useCountStore((store) => store.actions);
+  // custom hook 적용
   const increase = useIncreaseCount();
   const decrease = useDecreaseCount();
   return (
