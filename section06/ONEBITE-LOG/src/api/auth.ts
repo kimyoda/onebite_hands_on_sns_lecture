@@ -1,4 +1,5 @@
 import supabase from "@/lib/supabase";
+import type { Provider } from "@supabase/supabase-js";
 
 export async function signUp({
   email,
@@ -42,6 +43,34 @@ export async function signInWithPassword({
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function signInWithOAuth(provider: Provider) {
+  /*
+    supabase.auth.signInWithOAuth
+    소셜 로그인을 시작하는 Supabase Auth 메서드.
+
+    provider 인자:
+    "github", "google", "kakao" 등 소셜 서비스 이름을 문자열로 전달한다.
+
+    이 메서드가 실행되면:
+    1. Supabase 서버에서 GitHub 로그인 URL을 생성한다.
+       (client_id, redirect_uri 등이 포함된 URL)
+    2. 브라우저가 해당 URL로 자동 리디렉션된다.
+    3. 사용자가 GitHub에서 권한을 허가하면
+       code와 함께 Supabase Callback URL로 돌아온다.
+    4. Supabase가 code로 토큰을 교환하고 localStorage에 저장한다.
+
+  */
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
   });
 
   if (error) {
