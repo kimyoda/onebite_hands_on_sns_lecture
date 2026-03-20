@@ -8,6 +8,13 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  /*
+    useSignInWithPassword에서 mutate 함수를 꺼내
+    signInWithPassword로 이름을 바꿔서 사용한다.
+
+    signUp 페이지와 패턴이 동일하다.
+    mutate 함수를 호출해야 실제 API 요청이 시작된다.
+  */
   const { mutate: signInWithPassword } = useSignInWithPassword();
 
   const handleSignInWithPasswordClick = () => {
@@ -18,6 +25,19 @@ export default function SignInPage() {
     if (password.trim() === "") {
       return;
     }
+    /*
+      signInWithPassword mutate 호출:
+      내부적으로 supabase.auth.signInWithPassword()가 실행된다.
+
+      성공하면:
+      - Supabase가 access_token을 localStorage에 자동 저장
+      - 크롬 개발자 도구 → 애플리케이션 → 로컬 스토리지에서 확인 가능
+        키: "sb-{프로젝트ID}-auth-token"
+      - 이후 모든 supabase DB 요청에 토큰이 자동으로 포함됨
+
+      실패하면:
+      - 아이디/비밀번호 불일치 등의 에러가 throw됨
+    */
 
     signInWithPassword({
       email,
