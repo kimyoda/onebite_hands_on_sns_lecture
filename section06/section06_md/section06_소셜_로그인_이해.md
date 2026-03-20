@@ -169,3 +169,79 @@ User                    Supabase                  GitHub
 - 브라우저 URL 내에 잠깐 code만 노출된다.
 - 실제 토큰은 **서버 간 통신(Supabase - Github)** 으로만 전달된다.
 - code는 1회 사용 후 즉시 만료되어 탈취해도 의미가 없다.
+
+---
+
+## 소셜 로그인 설정 순서
+
+```
+1. GitHub에서 OAuth App 등록 → Client ID, Client Secret 발급
+2. Supabase에 Client ID, Client Secret 입력
+3. GitHub OAuth App에 Supabase Callback URL 등록
+4. 코드 작성
+```
+
+---
+
+### GitHub → Settings → Developer Settings → OAuth Apps
+
+이미지 1처럼 처음엔 등록된 OAuth App이 없다.
+`New OAuth app` 버튼을 클릭해서 새로 등록한다.
+
+### 등록 시 입력 항목 (이미지 3)
+
+| 항목                           | 설명                                    | 예시                    |
+| ------------------------------ | --------------------------------------- | ----------------------- |
+| **Application name**           | OAuth App 이름 (사용자에게 표시됨)      | `onebite-log`           |
+| **Homepage URL**               | 앱의 홈페이지 URL                       | `http://localhost:5173` |
+| **Application description**    | 앱 설명 (선택)                          | 생략 가능               |
+| **Authorization callback URL** | 로그인 성공 후 GitHub이 리디렉션할 주소 | Supabase Callback URL   |
+
+**Authorization callback URL이 핵심이다.**
+여기에 Supabase가 제공하는 Callback URL을 입력해야
+GitHub 로그인 성공 후 Supabase 서버로 code가 전달된다.
+
+### 등록 완료 후 발급되는 값
+
+```
+Client ID:      0v23liyvF6UeqhPo0LYT   ← GitHub이 우리 앱에게 발급한 식별자
+Client secrets: (별도로 Generate 필요)  ← 서버 간 통신에 사용하는 비밀 키
+```
+
+**Client ID** — 공개되어도 되는 값. OAuth 요청 시 URL에 포함된다.
+**Client Secret** — 절대 공개하면 안 되는 값. Supabase 서버가 GitHub에 토큰 교환 요청 시 사용한다.
+
+### GitHub 권한 허가 화면
+
+설정이 완료된 후 GitHub 로그인 버튼을 클릭하면
+이미지 7처럼 GitHub의 권한 허가 화면이 나타난다.
+
+```
+URL: github.com/login/oauth/authorize
+  ?client_id=0v23liyvF6UeqhPo0LYT   ← 우리 앱의 Client ID
+  &redirect_uri=...supabase.co/...   ← 성공 시 돌아올 주소
+```
+
+화면에 표시되는 내용:
+
+- **Authorize onebite-log** — 우리 앱 이름 (GitHub에 등록한 Application name)
+- **Personal user data / Email addresses (read-only)** — 요청하는 권한 목록
+- **Authorizing will redirect to ...supabase.co** — 허가 후 이동할 주소
+
+`Authorize kimyoda` 버튼을 클릭하면 OAuth 흐름이 진행된다.
+
+---
+
+### 서버 응답 - 유저 정보
+
+```
+user: {
+  id:                "e7c78145-..."
+  app_metadata:      { provider: "github", providers: ["github"] }  ← 소셜 로그인 출처
+  email:             "rladygks1210@naver.com"   ← GitHub 계정 이메일
+  email_confirmed_at: "2026-03-20T18:15:07..."
+  is_anonymous:      false
+  role:              "authenticated"
+  user_metadata:     { avatar_url: "https://avatars.githubusercontent.com/..." }
+}
+```
