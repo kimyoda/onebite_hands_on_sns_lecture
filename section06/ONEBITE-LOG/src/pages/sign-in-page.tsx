@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Link } from "react-router";
 
 import gitHubLogo from "@/assets/github-mark.svg";
+import googleLogo from "@/assets/google-logo.svg";
+import kakaoLogo from "@/assets/kakao-logo.svg";
 import { useSignInWithOAuth } from "@/hooks/mutations/use-sign-in-with-oauth";
 
 export default function SignInPage() {
@@ -53,6 +55,19 @@ export default function SignInPage() {
     signInWithOAuth("github");
   };
 
+  // Google 로그인
+  // "google"을 넘기면 Google OAuth 흐름이 시작된다.
+  // 브라우저가 Google 계정 선택 화면으로 이동한다.
+  const handleSignInWithGoogleClick = () => {
+    signInWithOAuth("google");
+  };
+  // Kakao 로그인
+  // "kakao"를 넘기면 카카오 OAuth 흐름이 시작된다.
+  // 브라우저가 카카오 로그인 화면으로 이동한다.
+  const handleSignWithKakaoClick = () => {
+    signInWithOAuth("kakao");
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <div className="text-xl font-bold">로그인</div>
@@ -83,6 +98,24 @@ export default function SignInPage() {
         >
           <img src={gitHubLogo} className="h-4 w-4" />
           Github 계정으로 로그인
+        </Button>
+        <Button
+          onClick={handleSignInWithGoogleClick}
+          className="w-full"
+          variant={"outline"}
+        >
+          <img src={googleLogo} className="h-4 w-4" />
+          Google 계정으로 로그인
+        </Button>
+        {/* Kakao 소셜 로그인
+            카카오 브랜드 가이드에 따라 배경색은 #FEE500 (카카오 옐로우)를 사용한다.
+            variant를 outline 대신 커스텀 스타일로 지정하면 더 자연스럽다. */}
+        <Button
+          onClick={handleSignWithKakaoClick}
+          className="w-full bg-[#FEE500] text-[#3C1E1E] hover:bg-[#F0D900]"
+        >
+          <img src={kakaoLogo} className="h-4 w-4" />
+          카카오 계정으로 로그인
         </Button>
       </div>
       <div>

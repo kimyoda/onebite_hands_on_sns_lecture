@@ -245,3 +245,79 @@ user: {
   user_metadata:     { avatar_url: "https://avatars.githubusercontent.com/..." }
 }
 ```
+
+## Google OAuth 연동 완성 정리
+
+#### Google 권한 허가 화면
+
+Google Cloud Console에서 Client ID / Secret 발급 경로
+Google Cloud Console(console.cloud.google.com)에 접속해서 프로젝트가 선택된 상태에서 진행해요.
+
+2026-03-21 기준 Google Cloud Console UI에서는 예전의 `API 및 서비스 > OAuth 동의 화면` 대신
+`Google 인증 플랫폼 > 브랜딩` 메뉴로 표시될 수 있어요.
+
+#### 순서
+
+- 1단계 OAuth 동의 화면 설정
+
+```
+좌측 햄버거 메뉴(≡)
+→ Google 인증 플랫폼
+→ 브랜딩
+→ 앱 정보, 대상, 연락처 정보 입력
+→ 만들기
+→ 필요한 항목 저장 후 계속
+
+```
+
+<img
+  src="/Users/kimyohan/개발-프론트(js, ts)/onebite_hands_on_sns_lecture/section06/section06_md/image.png"
+  alt="Google 인증 플랫폼 브랜딩 만들기 화면"
+/>
+
+- 위 화면에서 앱 이름, 사용자 지원 이메일, 개발자 연락처 이메일 등을 입력한다.
+- 테스트 단계에서는 대상(User Type)을 외부로 두고 진행하면 된다.
+
+- 2단계 - 사용자 인증 정보 만들기
+
+```
+좌측 메뉴
+→ Google 인증 플랫폼 또는 사용자 인증 정보
+→ 상단 [+ 사용자 인증 정보 만들기] 클릭
+→ OAuth 클라이언트 ID 선택
+→ 애플리케이션 유형: 웹 애플리케이션
+→ 이름: onebite-log (자유)
+→ 승인된 리디렉션 URI 추가:
+   https://tpiglvcgkhxeltxqqhmd.supabase.co/auth/v1/callback
+   (이미지 2의 Callback URL 그대로 복사해서 붙여넣기)
+→ 만들기
+```
+
+<img
+  src="/Users/kimyohan/개발-프론트(js, ts)/onebite_hands_on_sns_lecture/section06/section06_md/image-2.png"
+  alt="Google Cloud 사용자 인증 정보 화면"
+/>
+
+`+ 사용자 인증 정보 만들기` 버튼을 누르면 아래처럼 드롭다운이 열리고,
+여기서 `OAuth 클라이언트 ID`를 선택하면 된다.
+
+<img
+  src="/Users/kimyohan/개발-프론트(js, ts)/onebite_hands_on_sns_lecture/section06/section06_md/image-3.png"
+  alt="OAuth 클라이언트 ID 선택 화면"
+/>
+
+- 3단계 - Client ID / Secret 복사
+
+```
+만들기 완료 후 팝업에서
+Client ID, Client Secret이 바로 표시됨
+→ 이 값을 이미지 2의 Supabase Google 설정에 붙여넣기
+```
+
+<img
+  src="/Users/kimyohan/개발-프론트(js, ts)/onebite_hands_on_sns_lecture/section06/section06_md/image-4.png"
+  alt="OAuth 클라이언트 생성 완료 화면"
+/>
+
+- 생성된 `Client ID`와 `Client Secret`을 복사해서 Supabase의 `Authentication > Providers > Google`에 붙여넣는다.
+- Supabase Google Provider 설정 화면의 `Callback URL`은 Google Cloud의 `승인된 리디렉션 URI`에 반드시 동일하게 등록한다.
