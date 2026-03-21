@@ -71,6 +71,13 @@ export async function signInWithOAuth(provider: Provider) {
   */
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
+    options: {
+      // 카카오일 때만 이메일 scope 제외
+      // 카카오는 비즈앱 미등록 시 account_email 권한이 없어서
+      // 요청하면 KOE205 에러 발생
+      scopes:
+        provider === "kakao" ? "profile_nickname profile_image" : undefined,
+    },
   });
 
   if (error) {
