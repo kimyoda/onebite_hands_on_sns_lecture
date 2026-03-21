@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 
 import gitHubLogo from "@/assets/github-mark.svg";
+import googleLogo from "@/assets/google-logo.svg";
 import { useSignInWithOAuth } from "@/hooks/mutations/use-sign-in-with-oauth";
 
 export default function SignInPage() {
@@ -53,6 +54,13 @@ export default function SignInPage() {
     signInWithOAuth("github");
   };
 
+  // Google 로그인
+  // "google"을 넘기면 Google OAuth 흐름이 시작된다.
+  // 브라우저가 Google 계정 선택 화면으로 이동한다.
+  const handleSignInWithGoogleClick = () => {
+    signInWithOAuth("google");
+  };
+
   return (
     <div className="flex flex-col gap-8">
       <div className="text-xl font-bold">로그인</div>
@@ -83,6 +91,14 @@ export default function SignInPage() {
         >
           <img src={gitHubLogo} className="h-4 w-4" />
           Github 계정으로 로그인
+        </Button>
+        <Button
+          onClick={handleSignInWithGoogleClick}
+          className="w-full"
+          variant={"outline"}
+        >
+          <img src={googleLogo} className="h-4 w-4" />
+          Google 계정으로 로그인
         </Button>
       </div>
       <div>
