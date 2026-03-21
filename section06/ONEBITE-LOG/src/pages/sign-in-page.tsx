@@ -8,6 +8,7 @@ import gitHubLogo from "@/assets/github-mark.svg";
 import googleLogo from "@/assets/google-logo.svg";
 import kakaoLogo from "@/assets/kakao-logo.svg";
 import { useSignInWithOAuth } from "@/hooks/mutations/use-sign-in-with-oauth";
+import { toast } from "sonner";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -19,8 +20,18 @@ export default function SignInPage() {
 
     signUp 페이지와 패턴이 동일하다.
     mutate 함수를 호출해야 실제 API 요청이 시작된다.
+    어떤 비동기 요청에 결과에 대해서 UI와 관련된 로직은 컴포넌트, 데이터처리나 에러 로깅등은 커스텀 훅으로 빼서 역할 분리 및 레이어를 나눠서 적용할 수 있다.
+
   */
-  const { mutate: signInWithPassword } = useSignInWithPassword();
+  const { mutate: signInWithPassword } = useSignInWithPassword({
+    onError: (error) => {
+      toast.error(error.message, {
+        position: "top-center",
+      });
+
+      setPassword("");
+    },
+  });
   const { mutate: signInWithOAuth } = useSignInWithOAuth();
 
   const handleSignInWithPasswordClick = () => {
