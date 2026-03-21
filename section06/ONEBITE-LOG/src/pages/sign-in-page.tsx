@@ -8,6 +8,8 @@ import gitHubLogo from "@/assets/github-mark.svg";
 import googleLogo from "@/assets/google-logo.svg";
 import kakaoLogo from "@/assets/kakao-logo.svg";
 import { useSignInWithOAuth } from "@/hooks/mutations/use-sign-in-with-oauth";
+import { toast } from "sonner";
+import { generateErrorMessage } from "@/lib/error";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -19,9 +21,30 @@ export default function SignInPage() {
 
     signUp 페이지와 패턴이 동일하다.
     mutate 함수를 호출해야 실제 API 요청이 시작된다.
+    어떤 비동기 요청에 결과에 대해서 UI와 관련된 로직은 컴포넌트, 데이터처리나 에러 로깅등은 커스텀 훅으로 빼서 역할 분리 및 레이어를 나눠서 적용할 수 있다.
+
   */
-  const { mutate: signInWithPassword } = useSignInWithPassword();
-  const { mutate: signInWithOAuth } = useSignInWithOAuth();
+  const { mutate: signInWithPassword, isPending: isSignInWithPasswordPending } =
+    useSignInWithPassword({
+      onError: (error) => {
+        const message = generateErrorMessage(error);
+
+        toast.error(message, {
+          position: "top-center",
+        });
+
+        setPassword("");
+      },
+    });
+  const { mutate: signInWithOAuth, isPending: isSignInWithOAuthPending } =
+    useSignInWithOAuth({
+      onError: (error) => {
+        const message = generateErrorMessage(error);
+        toast.error(message, {
+          position: "top-center",
+        });
+      },
+    });
 
   const handleSignInWithPasswordClick = () => {
     if (email.trim() === "") {
@@ -55,6 +78,8 @@ export default function SignInPage() {
     signInWithOAuth("github");
   };
 
+  const isPending = isSignInWithOAuthPending || isSignInWithPasswordPending;
+
   // Google 로그인
   // "google"을 넘기면 Google OAuth 흐름이 시작된다.
   // 브라우저가 Google 계정 선택 화면으로 이동한다.
@@ -73,6 +98,7 @@ export default function SignInPage() {
       <div className="text-xl font-bold">로그인</div>
       <div className="flex flex-col gap-2">
         <Input
+          disabled={isPending}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="py-6"
@@ -80,6 +106,7 @@ export default function SignInPage() {
           placeholder="example@abc.com"
         />
         <Input
+          disabled={isPending}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="py-6"
@@ -88,10 +115,15 @@ export default function SignInPage() {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <Button onClick={handleSignInWithPasswordClick} className="w-full">
+        <Button
+          disabled={isPending}
+          onClick={handleSignInWithPasswordClick}
+          className="w-full"
+        >
           로그인
         </Button>
         <Button
+          disabled={isPending}
           onClick={handleSignInWithGithubClick}
           className="w-full"
           variant={"outline"}
@@ -100,6 +132,7 @@ export default function SignInPage() {
           Github 계정으로 로그인
         </Button>
         <Button
+          disabled={isPending}
           onClick={handleSignInWithGoogleClick}
           className="w-full"
           variant={"outline"}
