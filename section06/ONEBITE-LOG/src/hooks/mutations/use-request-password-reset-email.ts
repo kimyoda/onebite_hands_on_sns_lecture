@@ -6,8 +6,8 @@ export function useRequestPasswordResetEmail(callbacks?: UseMutationCallback) {
   return useMutation({
     mutationFn: requestPasswordResetEmail,
     onSuccess: () => {
-      if (callbacks?.onSucess) {
-        callbacks.onSucess();
+      if (callbacks?.onSuccess) {
+        callbacks.onSuccess();
       }
     },
     onError: (error) => {

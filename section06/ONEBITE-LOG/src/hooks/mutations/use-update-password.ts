@@ -6,8 +6,8 @@ export function useUpdatePassword(callbacks?: UseMutationCallback) {
   return useMutation({
     mutationFn: updatePassword,
     onSuccess: () => {
-      if (callbacks?.onSucess) {
-        callbacks.onSucess();
+      if (callbacks?.onSuccess) {
+        callbacks.onSuccess();
       }
     },
     onError: (error) => {
