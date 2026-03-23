@@ -151,9 +151,15 @@ export default function SignInPage() {
           카카오 계정으로 로그인
         </Button>
       </div>
-      <div>
+      <div className="flex flex-col gap-2">
         <Link className="text-muted-foreground hover:underline" to={"/sign-up"}>
           계정이 없으시다면? 회원가입
+        </Link>
+        <Link
+          className="text-muted-foreground hover:underline"
+          to={"/forget-password"}
+        >
+          비밀번호를 잊으셨나요?
         </Link>
       </div>
     </div>
