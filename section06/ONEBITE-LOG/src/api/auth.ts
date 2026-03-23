@@ -86,3 +86,29 @@ export async function signInWithOAuth(provider: Provider) {
 
   return data;
 }
+
+// 인증과 관련된 비동기 함수
+export async function requestPasswordResetEmail(email: string) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${import.meta.env.VITE_PUBLIC_URL}/reset-password`,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+// 비밀번호 재설정 새로운 비동기 함수
+export async function updatePassword(password: string) {
+  const { data, error } = await supabase.auth.updateUser({
+    password,
+  });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
