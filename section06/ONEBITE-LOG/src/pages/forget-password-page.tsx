@@ -12,7 +12,7 @@ export default function ForgetPasswordPage() {
     mutate: requestPasswordResetEmail,
     isPending: isRequestPasswordResetEmailPending,
   } = useRequestPasswordResetEmail({
-    onSucess: () => {
+    onSuccess: () => {
       toast.info("인증 메일이 잘 발송되었습니다.", {
         position: "top-center",
       });
