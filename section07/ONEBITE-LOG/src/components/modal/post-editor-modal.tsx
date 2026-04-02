@@ -37,15 +37,6 @@ export default function PostEditorModal() {
   const textareRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-    textareRef.current?.focus();
-    setContent("");
-    setImages([]);
-  }, [isOpen]);
-
   const handleCloseModal = () => {
     if (content !== "" || images.length !== 0) {
       // AlertModal
@@ -93,6 +84,8 @@ export default function PostEditorModal() {
     setImages((prevImages) =>
       prevImages.filter((item) => item.previewUrl !== image.previewUrl),
     );
+    // 메모리에서도 삭제가 잘 되는 지 확인
+    URL.revokeObjectURL(image.previewUrl);
   };
 
   useEffect(() => {
@@ -101,6 +94,19 @@ export default function PostEditorModal() {
       textareRef.current.style.height = textareRef.current.scrollHeight + "px";
     }
   }, [content]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      // 메모리에서 이미지 삭제
+      images.forEach((image) => {
+        URL.revokeObjectURL(image.previewUrl);
+      });
+      return;
+    }
+    textareRef.current?.focus();
+    setContent("");
+    setImages([]);
+  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleCloseModal}>
