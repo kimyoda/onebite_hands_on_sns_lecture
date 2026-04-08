@@ -2,6 +2,25 @@ import supabase from "@/lib/supabase";
 import { uploadImage } from "./image";
 import type { PostEntity } from "@/types";
 
+// post 테이블의 모든 데이터를 최신순으로 조회 요청
+export async function fetchPosts() {
+  const { data, error } = await supabase
+    .from("post")
+    // *로 모든 컬럼의 값을 가져오고 profile 데이트로부터 author_id 컬럼 값을 가져오고 일치하는 값을 모두다 설정한다.
+    .select("*, author: profile!author_id (*)")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+  return data;
+}
+
+// 외래키 (Foreign Key)
+// 테이블과 테이블을 연결하는 키, 두 테이블을 연결하는 것
+// 스키마란?
+// 데이터베이스의 구조와 규칙을 정의하는 큰 단위, 테이블을 정의하는 큰 폴더
+
 export async function createPost(content: string) {
   const { data, error } = await supabase
     .from("post")
