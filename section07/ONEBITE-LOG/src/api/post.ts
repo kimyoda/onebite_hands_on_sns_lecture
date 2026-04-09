@@ -3,12 +3,13 @@ import { uploadImage } from "./image";
 import type { PostEntity } from "@/types";
 
 // post 테이블의 모든 데이터를 최신순으로 조회 요청
-export async function fetchPosts() {
+export async function fetchPosts({ from, to }: { from: number; to: number }) {
   const { data, error } = await supabase
     .from("post")
     // *로 모든 컬럼의 값을 가져오고 profile 데이트로부터 author_id 컬럼 값을 가져오고 일치하는 값을 모두다 설정한다.
     .select("*, author: profile!author_id (*)")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(from, to);
 
   if (error) {
     throw error;
