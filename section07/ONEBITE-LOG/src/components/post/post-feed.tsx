@@ -29,7 +29,7 @@ export default function PostFeed() {
   return (
     <div className="flex flex-col gap-10">
       {data.pages.map((page) =>
-        page.map((post) => <PostItem key={post.id} {...post} />),
+        page.map((postId) => <PostItem key={postId} postId={postId} />),
       )}
       {isFetchingNextPage && <Loader />}
       {/* 관측하고자 하는 div에 세닝 */}

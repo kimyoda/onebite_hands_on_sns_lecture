@@ -17,6 +17,20 @@ export async function fetchPosts({ from, to }: { from: number; to: number }) {
   return data;
 }
 
+// 하나의 postItem을 가져오는 비동기 함수
+export async function fetchPostById(postId: number) {
+  const { data, error } = await supabase
+    .from("post")
+    .select("*, author: profile!author_id (*)")
+    .eq("id", postId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+  return data;
+}
+
 // 외래키 (Foreign Key)
 // 테이블과 테이블을 연결하는 키, 두 테이블을 연결하는 것
 // 스키마란?
