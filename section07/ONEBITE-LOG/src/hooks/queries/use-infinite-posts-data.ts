@@ -33,5 +33,8 @@ export function useInfinitePostsData() {
       }
       return allPages.length;
     },
+
+    // 어떤 상황이 와도 무한 스크롤을 받아와도 stale을 받아와도 refetching이 일어나지 않는다
+    staleTime: Infinity,
   });
 }
