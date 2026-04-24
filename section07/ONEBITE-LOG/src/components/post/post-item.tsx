@@ -11,10 +11,30 @@ import { formatTimeAgo } from "@/lib/time";
 import EditPostButton from "./edit-post-button";
 import DeletePostButton from "./delete-post-button";
 import { useSession } from "@/store/session";
+import { usePostByIdData } from "@/hooks/queries/use-post-by-id-data";
+import Loader from "../loader";
+import Fallback from "../fallback";
 
-export default function PostItem(post: Post) {
+export default function PostItem({ postId }: { postId: number }) {
+  // 내가 로그인했는지 다른사람이 로그인했는지
   const session = useSession();
   const userId = session?.user.id;
+
+  const {
+    data: post,
+    isPending,
+    error,
+  } = usePostByIdData({
+    postId,
+    type: "FEED",
+  });
+
+  if (isPending) {
+    return <Loader />;
+  }
+  if (error) {
+    return <Fallback />;
+  }
 
   const isMine = post.author_id === userId;
 
@@ -41,6 +61,7 @@ export default function PostItem(post: Post) {
 
         {/* 1-2. 수정/삭제 버튼 */}
         <div className="text-muted-foreground flex text-sm">
+          {/* 내가 만든 포스트에만 수정, 삭제 버튼 생성 */}
           {isMine && (
             <>
               <EditPostButton {...post} />
