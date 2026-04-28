@@ -55,7 +55,7 @@ profile 테이블: RLS DISABLED
 
 ### SELECT 정책 (조회)
 
-```
+```sql
 create policy "Anyone can select post"
 on "public"."post"
 as PERMISSIVE
@@ -78,3 +78,37 @@ SNS 서비스는 게시글을 모든 사람이 볼 수 있어야 한다.
 비로그인 사용자도 피드를 볼 수 있어야 하므로 `to public`으로 설정.
 
 ---
+
+### INSERT 생성
+
+```sql
+create policy "Authenticated users can create post"
+on "public"."post"
+as PERMISSIVE
+for INSERT
+to authenticated
+with check (
+  (select auth.uid()) = author_id
+);
+```
+
+> 로그인한 사용자가 post를 생성, 반드시 본인의 id를 author_id로 넣어야 한다
+
+| 항목               | 값                | 의미                          |
+| ------------------ | ----------------- | ----------------------------- |
+| `for INSERT`       | 생성 작업에 적용  | 데이터 추가                   |
+| `to authenticated` | 인증된 사용자만   | 비로그인 사용자는 INSERT 불가 |
+| `with check (...)` | 삽입 시 조건 검증 | 조건이 false이면 거부         |
+
+**`with check` 조건**
+
+```sql
+(select auth.uid()) = author_id
+```
+
+```
+auth.uid()
+-> 현재 로그인한 사용자의 UUID를 가져오는 Supabase 내장 함수
+
+
+```
