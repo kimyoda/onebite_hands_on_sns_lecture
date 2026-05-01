@@ -28,6 +28,26 @@ content가 비어있고 images도 없는가?
 
 ---
 
+### 📊 모달 2개의 관계 이해하기
+
+```
+PostEditorModal (게시글 작성 모달)
+        │
+        │ X 버튼 클릭 + 내용 있음
+        ▼
+AlertModal (이탈 경고 다이얼로그)
+  ┌─────┴─────┐
+취소           확인
+  │             │
+  ▼             ▼
+AlertModal    AlertModal 닫힘
+닫힘           +
+PostEditorModal PostEditorModal
+그대로 유지     닫힘 (onPositive 실행)
+```
+
+---
+
 ### 💡 AlertModal을 범용으로 설계
 
 현재 PostEditorModal이 이탈 방지, `title`,`description`, `onPositive`, `onNegative`를 외부에서 주입받는 구조에 재사용이 가능하다
