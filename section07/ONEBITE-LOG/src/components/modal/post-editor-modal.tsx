@@ -51,7 +51,23 @@ export default function PostEditorModal() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCloseModal = () => {
+    /*
+    이탈 방지 조건 확인:
+    content가 비어있지 않거나 (텍스트 작성 중)
+    images 배열에 이미지가 있으면 (이미지 선택 중)
+    → 작성 중인 내용이 있다고 판단
+  */
     if (content !== "" || images.length !== 0) {
+      /*
+      AlertModal을 열어 사용자에게 확인을 받는다.
+      openAlertModal은 Zustand store의 open 액션과 연결됨.
+
+      title: 경고 제목
+      description: 경고 내용
+      onPositive: "확인" 버튼 클릭 시 실행할 함수
+        → PostEditorModal의 close()를 호출해서 모달을 닫는다.
+        → onPositive가 없으면 AlertModal에서 확인을 눌러도 닫히지 않는다.
+    */
       // AlertModal
       openAlertModal({
         title: "게시글 작성이 마무리 되지 않았습니다",
