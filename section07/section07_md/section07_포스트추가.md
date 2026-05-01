@@ -152,6 +152,109 @@ function App() {
 
 1. DOM 위치는 달라도 이벤트는 React 트리를 따른다
 
+- Portal에서 발생한 이벤트는 DOM 트리가 아닌 React트리를 따라 전파된다.
+- Portal이 `<div onClick>` 안에 선언되어 있으면, 포털 내부를 부모의 onClick이 실행된다.
+
+```tsx
+<div onClick={() => console.log("부모 클릭!")}>
+  {" "}
+  // ← 이것도 실행됨
+  {createPortal(
+    <button>클릭</button>, // 다른 DOM 위치에 있지만
+    document.body, // 이벤트는 React 트리를 따라 위로 전파
+  )}
+</div>
+```
+
 2. Context, 상태 공유 정상 동작
 
+- Portal은 React 트리 내에 그대로 존재, Context, props 상태 등이 DOM 위치와 무관하게 정상 작동한다.
+
+```tsx
+<ThemeContext.Provider value="dark">
+  {createPortal(
+    <Modal />, // ThemeContext를 정상적으로 사용 가능
+    document.body,
+  )}
+</ThemeContext.Provider>
+```
+
 3. CSS 상속은 적용되지 않는다.
+
+- Portal은 다른 DOM 위치에 렌더링되어 부모의 CSS 속성을 상속받지 않는다.
+
+```tsx
+<div style={{ color: "red" }}>
+  <p>이건 빨간색</p>
+  {createPortal(<p>이건 빨간색 아님 (CSS 상속 안 됨)</p>, document.body)}
+</div>
+```
+
+---
+
+### 📊 일반 렌더링 vs createPortal 비교
+
+```
+일반 렌더링:
+React 트리          DOM 트리
+App                 #root
+└── Main             └── div.main
+    └── Modal            └── div.modal  ← 부모 안에 갇힘
+
+────────────────────────────────────────────────
+
+createPortal:
+React 트리          DOM 트리
+App                 #root
+└── Main             └── div.main
+    └── Modal            (모달 없음)
+
+                    #modal-root
+                     └── div.modal  ← 부모 밖으로 탈출
+
+React 트리상: Main의 자식 (Context, 이벤트 등 정상 동작)
+DOM 트리상: #modal-root의 자식 (CSS 제약에서 자유)
+```
+
+---
+
+### 🎯 주요 사용 사례
+
+| 사용 사례          | 이유                                       |
+| ------------------ | ------------------------------------------ |
+| **모달 (Modal)**   | 전체 화면을 덮는 오버레이가 필요           |
+| **툴팁 (Tooltip)** | overflow: hidden에 갇히지 않아야 함        |
+| **드롭다운 메뉴**  | 다른 요소 위에 올라와야 함                 |
+| **토스트 알림**    | 항상 화면 최상단에 표시해야 함             |
+| **팝업**           | z-index 제약 없이 전체 화면 기준 위치 필요 |
+
+---
+
+### 주의사항
+
+**domNode는 이미 존재하는 노드를 사용해야 한다**
+
+```tsx
+// 잘못된 방식 - 렌더링 중에 새로 만들면 안 됨
+createPortal(<Modal />, document.createElement("div"));
+
+// 올바른 방식 - 이미 존재하는 DOM 노드 사용
+createPortal(<Modal />, document.getElementById("modal-root")!);
+createPortal(<Modal />, document.body);
+```
+
+**접근성(Accessibility) 관리 필요**
+
+모달철머 포커스가 필요한 UI에서 키보드 포커스 관리가 중요하다.
+
+- 모달이 열리면 포커스를 모달 안으로 이동
+- 모달이 닫히면 원래 요소로 포커스 복귀
+- Tab 키가 모달 밖으로 나가지 않도록 처리
+
+**domNode가 업데이트 시 바뀌면 포탈 컨텐츠가 재생성된다**
+
+---
+
+> createPortal은 React 16부터 지원되는 기능,
+> "부모 DOM의 제약을 벗어나야 하지만 React 트리는 유지하고 싶을 때" 사용하는 것이 중요하다
+> 모달, 툴팁, 드롭다운, 토스트 등 UI에서 거의 필수적으로 활용한다.
