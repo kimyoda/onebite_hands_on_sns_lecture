@@ -13,7 +13,22 @@ export default function useTogglePostLike(callbacks?: UseMutationCallback) {
 
   return useMutation({
     mutationFn: togglePostLike,
-    // 낙관적 업데이트 추가
+    /*
+      ─── 낙관적 업데이트 (Optimistic Update) ───
+
+      일반 업데이트 흐름:
+      하트 클릭 → 서버 요청 → 응답 대기 → UI 업데이트
+      → 네트워크가 느리면 하트가 즉시 반응하지 않음
+
+      낙관적 업데이트 흐름:
+      하트 클릭 → 캐시 즉시 업데이트 (UI 즉시 반응) → 서버 요청 (백그라운드)
+      → 성공: 그대로 유지
+      → 실패: 이전 상태로 롤백
+      → 사용자는 즉각적인 피드백을 받음
+
+      좋아요는 실패 확률이 낮고 즉각적인 반응이 중요하므로
+      낙관적 업데이트가 적합하다.
+    */
     onMutate: async ({ postId }) => {
       await queryClient.cancelQueries({
         queryKey: QUERY_KEYS.post.byId(postId),
