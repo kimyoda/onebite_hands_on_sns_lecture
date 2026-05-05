@@ -3,32 +3,54 @@ import { uploadImage } from "./image";
 import type { PostEntity } from "@/types";
 
 // post 테이블의 모든 데이터를 최신순으로 조회 요청
-export async function fetchPosts({ from, to }: { from: number; to: number }) {
+export async function fetchPosts({
+  from,
+  to,
+  userId,
+}: {
+  from: number;
+  to: number;
+  userId: string;
+}) {
   const { data, error } = await supabase
     .from("post")
     // *로 모든 컬럼의 값을 가져오고 profile 데이트로부터 author_id 컬럼 값을 가져오고 일치하는 값을 모두다 설정한다.
-    .select("*, author: profile!author_id (*)")
+    .select("*, author: profile!author_id (*), myLiked: like!post_id (*)")
+    .eq("like.user_id", userId)
     .order("created_at", { ascending: false })
     .range(from, to);
 
   if (error) {
     throw error;
   }
-  return data;
+  return data.map((post) => ({
+    ...post,
+    isLiked: post.myLiked && post.myLiked.length > 0,
+  }));
 }
 
 // 하나의 postItem을 가져오는 비동기 함수
-export async function fetchPostById(postId: number) {
+export async function fetchPostById({
+  postId,
+  userId,
+}: {
+  postId: number;
+  userId: string;
+}) {
   const { data, error } = await supabase
     .from("post")
-    .select("*, author: profile!author_id (*)")
+    .select("*, author: profile!author_id (*), myLiked: like!post_id (*)")
+    .eq("like.user_id", userId)
     .eq("id", postId)
     .single();
 
   if (error) {
     throw error;
   }
-  return data;
+  return {
+    ...data,
+    isLiked: data.myLiked && data.myLiked.length > 0,
+  };
 }
 
 // 외래키 (Foreign Key)
@@ -137,6 +159,16 @@ export async function togglePostLike({
   postId: number;
   userId: string;
 }) {
+  /*
+    supabase.rpc("toggle_post_like", args)
+    Supabase의 RPC(Remote Procedure Call) 호출 방법.
+    DB에 정의된 toggle_post_like 함수를 실행한다.
+
+    일반 쿼리(.from().insert() 등)와 달리
+    DB 함수가 모든 로직을 처리하고 결과(boolean)만 반환한다.
+
+    data: true (좋아요 추가됨) 또는 false (좋아요 취소됨)
+  */
   const { data, error } = await supabase.rpc("toggle_post_like", {
     p_post_id: postId,
     p_user_id: userId,
